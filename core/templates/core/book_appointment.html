@@ -1,0 +1,383 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book Appointment | HealthBridge</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fb;
+            color: #1f2937;
+        }
+
+        /* Navbar */
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        header h1 {
+            color: #087ea4;
+            font-size: 28px;
+        }
+
+        nav {
+            display: flex;
+            gap: 28px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #087ea4;
+        }
+
+        /* Main */
+        main {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-title h2 {
+            font-size: 34px;
+            color: #12344d;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .booking-container {
+            display: grid;
+            grid-template-columns: 0.9fr 1.4fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Doctor Card */
+        .doctor-info {
+            background: linear-gradient(135deg, #087ea4, #19a7ce);
+            color: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(8,126,164,0.20);
+        }
+
+        .doctor-icon {
+            width: 75px;
+            height: 75px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 22px;
+        }
+
+        .doctor-info h3 {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .doctor-info .specialization {
+            font-size: 17px;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .doctor-detail {
+            padding: 12px 0;
+            border-top: 1px solid rgba(255,255,255,0.25);
+            font-size: 14px;
+        }
+
+        /* Form */
+        .booking-form {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .booking-form h3 {
+            color: #12344d;
+            font-size: 23px;
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #087ea4;
+            box-shadow: 0 0 0 3px rgba(8,126,164,0.10);
+        }
+
+        .confirm-btn {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 9px;
+            background: #087ea4;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 5px;
+        }
+
+        .confirm-btn:hover {
+            background: #066782;
+            transform: translateY(-1px);
+        }
+
+        .secure-note {
+            text-align: center;
+            margin-top: 15px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* Mobile */
+        @media (max-width: 750px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                gap: 14px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .page-title h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>HealthBridge</h1>
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'find_doctor' %}">Find Doctor</a>
+        <a href="{% url 'hospitals' %}">Hospitals</a>
+        <a href="{% url 'appointments' %}">Appointments</a>
+    </nav>
+
+</header>
+
+
+<main>
+
+    <div class="page-title">
+        <h2>Book Your Appointment</h2>
+        <p>Schedule a consultation with your selected doctor.</p>
+    </div>
+
+
+    <div class="booking-container">
+
+        <!-- Doctor Information -->
+
+        <div class="doctor-info">
+
+            <div class="doctor-icon">
+                👨‍⚕️
+            </div>
+
+            <h3>Dr. {{ doctor.name }}</h3>
+
+            <p class="specialization">
+                {{ doctor.specialization }}
+            </p>
+
+            <div class="doctor-detail">
+                📧 {{ doctor.email }}
+            </div>
+
+            <div class="doctor-detail">
+                📞 {{ doctor.phone }}
+            </div>
+
+        </div>
+
+
+        <!-- Appointment Form -->
+
+        <div class="booking-form">
+
+            <h3>Patient Information</h3>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="phone">Phone Number</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="appointment_date">
+                            Appointment Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="appointment_date"
+                            name="appointment_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="appointment_time">
+                            Appointment Time
+                        </label>
+
+                        <input
+                            type="time"
+                            id="appointment_time"
+                            name="appointment_time"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="confirm-btn">
+                    Confirm Appointment
+                </button>
+
+                <p class="secure-note">
+                    🔒 Your appointment details are securely stored.
+                </p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

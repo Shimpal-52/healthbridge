@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ hospital.name }} | HealthBridge</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f8fb;
+            color: #1e293b;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 70px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8%;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 700;
+            color: #1769aa;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #1769aa;
+        }
+
+        /* ================= PAGE ================= */
+
+        .page {
+            max-width: 1050px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .breadcrumb a {
+            color: #1769aa;
+            text-decoration: none;
+        }
+
+        /* ================= MAIN CARD ================= */
+
+        .hospital-card {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+        }
+
+        /* ================= HEADER ================= */
+
+        .hospital-header {
+            background: linear-gradient(135deg, #1769aa, #2189c5);
+            color: white;
+            padding: 42px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .hospital-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            flex-shrink: 0;
+        }
+
+        .hospital-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .hospital-header p {
+            font-size: 15px;
+            opacity: 0.92;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 15px;
+            padding: 7px 13px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.16);
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #86efac;
+            border-radius: 50%;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 38px 42px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 22px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .info-box {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fbfdff;
+        }
+
+        .info-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 30px;
+            padding-top: 28px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .primary-btn {
+            background: #1769aa;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #0f568b;
+        }
+
+        .secondary-btn {
+            background: #eef5f9;
+            color: #1769aa;
+        }
+
+        .secondary-btn:hover {
+            background: #e1edf4;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            margin-top: 70px;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 28px 20px;
+        }
+
+        footer .footer-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        footer p {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            nav {
+                padding: 0 5%;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            .page {
+                margin: 30px auto;
+            }
+
+            .hospital-header {
+                padding: 30px 25px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hospital-header h1 {
+                font-size: 26px;
+            }
+
+            .content {
+                padding: 28px 25px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+
+        <div class="logo">
+            HealthBridge
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'find_doctor' %}">
+                Find Doctor
+            </a>
+
+            <a href="{% url 'hospitals' %}">
+                Hospitals
+            </a>
+
+            <a href="{% url 'appointments' %}">
+                Appointments
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= PAGE ================= -->
+
+    <div class="page">
+
+        <div class="breadcrumb">
+            <a href="{% url 'hospitals' %}">
+                Hospitals
+            </a>
+            &nbsp; / &nbsp;
+            Hospital Details
+        </div>
+
+
+        <!-- ================= HOSPITAL CARD ================= -->
+
+        <div class="hospital-card">
+
+            <!-- HEADER -->
+
+            <div class="hospital-header">
+
+                <div class="hospital-icon">
+                    🏥
+                </div>
+
+                <div>
+
+                    <h1>
+                        {{ hospital.name }}
+                    </h1>
+
+                    <p>
+                        Trusted healthcare facility listed on HealthBridge
+                    </p>
+
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        Hospital Available
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTENT -->
+
+            <div class="content">
+
+                <h2 class="section-title">
+                    Hospital Information
+                </h2>
+
+
+                <div class="info-grid">
+
+                    <!-- ADDRESS -->
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            📍 ADDRESS
+                        </div>
+
+                        <div class="info-value">
+                            {{ hospital.address }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            📞 PHONE
+                        </div>
+
+                        <div class="info-value">
+                            {{ hospital.phone }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTION BUTTONS -->
+
+                <div class="actions">
+
+                    <a
+                        href="tel:{{ hospital.phone }}"
+                        class="btn primary-btn"
+                    >
+                        📞 Contact Hospital
+                    </a>
+
+                    <a
+                        href="{% url 'hospitals' %}"
+                        class="btn secondary-btn"
+                    >
+                        ← Back to Hospitals
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-title">
+            HealthBridge
+        </div>
+
+        <p>
+            Your Healthcare, Connected in One Place
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

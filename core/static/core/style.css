@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f9fc;
+    color: #222;
+}
+
+/* Header */
+header {
+    background: white;
+    padding: 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+header h1 {
+    font-size: 30px;
+    color: #1677c8;
+}
+
+header p {
+    display: none;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: #1677c8;
+}
+
+/* Hero Section */
+main section:first-child {
+    background: linear-gradient(135deg, #e8f5ff, #ffffff);
+    padding: 90px 60px;
+    text-align: center;
+}
+
+main section:first-child h2 {
+    font-size: 46px;
+    color: #145da0;
+    margin-bottom: 20px;
+}
+
+main section:first-child p {
+    max-width: 700px;
+    margin: auto;
+    font-size: 19px;
+    line-height: 1.7;
+    color: #555;
+}
+
+button {
+    margin: 30px 8px 0;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    background-color: #1677c8;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0d5fa5;
+}
+
+/* Services */
+main section:nth-child(2) {
+    padding: 70px 60px;
+    text-align: center;
+}
+
+main section:nth-child(2) h2 {
+    font-size: 32px;
+    color: #145da0;
+    margin-bottom: 40px;
+}
+
+main section:nth-child(2) > div {
+    display: inline-block;
+    vertical-align: top;
+    width: 22%;
+    min-height: 180px;
+    margin: 1%;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+main section:nth-child(2) h3 {
+    color: #1677c8;
+    margin-bottom: 15px;
+}
+
+main section:nth-child(2) p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Footer */
+footer {
+    background: #145da0;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+footer p {
+    margin: 0;
+}

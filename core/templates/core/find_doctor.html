@@ -1,0 +1,100 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Find Doctor - HealthBridge</title>
+
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+
+<body>
+
+<header>
+    <h1>HealthBridge</h1>
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'find_doctor' %}">Find Doctor</a>
+        <a href="{% url 'hospitals' %}">Hospitals</a>
+        <a href="{% url 'appointments' %}">Appointments</a>
+    </nav>
+</header>
+
+
+<main>
+
+    <h2>Find a Doctor</h2>
+
+    <p>Search doctors by name or specialization.</p>
+
+
+    <!-- Search Box -->
+
+    <form method="GET" action="{% url 'find_doctor' %}" class="search-box">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search doctor or specialization"
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+
+    <!-- Doctor List -->
+
+    <section class="doctor-list">
+
+        {% for doctor in doctors %}
+
+        <div class="doctor-card">
+
+            <h3>Dr. {{ doctor.name }}</h3>
+
+            <p>
+                <strong>Specialization:</strong>
+                {{ doctor.specialization }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ doctor.email }}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                {{ doctor.phone }}
+            </p>
+
+
+            <!-- Book Appointment -->
+
+            <a href="{% url 'book_appointment' doctor.id %}">
+                <button type="button">
+                    Book Appointment
+                </button>
+            </a>
+
+        </div>
+
+        {% empty %}
+
+        <p>No doctors found.</p>
+
+        {% endfor %}
+
+    </section>
+
+</main>
+
+</body>
+</html>
