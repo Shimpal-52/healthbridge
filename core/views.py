@@ -53,15 +53,23 @@ def hospitals(request):
         'hospitals': hospitals,
         'query': query
     })
-#==================HOSPITAL DETAILS==================
+
+
+# ================= HOSPITAL DETAILS =================
+
 def hospital_details(request, hospital_id):
-    hospital = get_object_or_404(Hospital, id=hospital_id)
+    hospital = get_object_or_404(
+        Hospital,
+        id=hospital_id
+    )
 
     return render(request, 'core/hospital_details.html', {
         'hospital': hospital
     })
 
+
 # ================= APPOINTMENTS =================
+
 def appointments(request):
 
     if request.method == 'POST':
@@ -69,15 +77,20 @@ def appointments(request):
         name = request.POST.get('patient_name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
-        doctor_id = request.POST.get('doctor')
+        doctor_name = request.POST.get('doctor')
         appointment_date = request.POST.get('appointment_date')
         appointment_time = request.POST.get('appointment_time')
 
+        # Doctor name se doctor find karo
+        if doctor_name:
+            doctor_name = doctor_name.replace('Dr. ', '').strip()
+
         doctor = get_object_or_404(
             Doctor,
-            id=doctor_id
+            name__icontains=doctor_name
         )
 
+        # Patient create ya existing patient find
         patient, created = Patient.objects.get_or_create(
             email=email,
             defaults={
@@ -86,11 +99,13 @@ def appointments(request):
             }
         )
 
+        # Existing patient ki details update
         if not created:
             patient.name = name
             patient.phone = phone
             patient.save()
 
+        # Appointment database me save
         Appointment.objects.create(
             patient=patient,
             doctor=doctor,
@@ -100,15 +115,17 @@ def appointments(request):
 
         return redirect('appointments')
 
-    appointments = Appointment.objects.all().order_by(
+    # Existing appointments
+    appointments_list = Appointment.objects.all().order_by(
         '-appointment_date'
     )
 
+    # Doctors aur hospitals form ke liye
     doctors = Doctor.objects.all()
     hospitals_list = Hospital.objects.all()
 
     return render(request, 'core/appointments.html', {
-        'appointments': appointments,
+        'appointments': appointments_list,
         'doctors': doctors,
         'hospitals': hospitals_list
     })
@@ -131,6 +148,7 @@ def book_appointment(request, doctor_id):
         appointment_date = request.POST.get('appointment_date')
         appointment_time = request.POST.get('appointment_time')
 
+        # Patient create ya existing patient find
         patient, created = Patient.objects.get_or_create(
             email=email,
             defaults={
@@ -144,6 +162,7 @@ def book_appointment(request, doctor_id):
             patient.phone = phone
             patient.save()
 
+        # Appointment save
         Appointment.objects.create(
             patient=patient,
             doctor=doctor,

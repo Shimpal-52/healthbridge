@@ -484,7 +484,7 @@
                 </div>
 
 
-                <form method="POST" action="{%url 'appointments' %}">
+                <form method="POST" action="{% url 'appointments' %}">
                     {% csrf_token %}
 
 
@@ -549,7 +549,7 @@
 
                     <div class="form-row">
 
-                        <div class="POST" action="{% url 'appointment'  %}" >
+                        <div class="form-group">
 
                             <label>
                                 Select Doctor <span class="required">*</span>
@@ -650,20 +650,17 @@
                                 Preferred Time <span class="required">*</span>
                             </label>
 
-                            <select name="appointment_time" required>
+                               <select name="appointment_time" required>
+                                  <option value="">Select time</option>
 
-                                <option value="">
-                                    Select time
-                                </option>
-
-                                <option>09:00 AM</option>
-                                <option>10:00 AM</option>
-                                <option>11:00 AM</option>
-                                <option>12:00 PM</option>
-                                <option>02:00 PM</option>
-                                <option>03:00 PM</option>
-                                <option>04:00 PM</option>
-                                <option>05:00 PM</option>
+                                   <option value="09:00">09:00 AM</option>
+                                   <option value="10:00">10:00 AM</option>
+                                   <option value="11:00">11:00 AM</option>
+                                   <option value="12:00">12:00 PM</option>
+                                   <option value="14:00">02:00 PM</option>
+                                   <option value="15:00">03:00 PM</option>
+                                   <option value="16:00">04:00 PM</option>
+                                   <option value="17:00">05:00 PM</option>
 
                             </select>
 
@@ -763,30 +760,8 @@
 
     <!-- ================= JAVASCRIPT ================= -->
 
-    <script>
-
-        const form = document.getElementById("appointmentForm");
-
-        const successMessage =
-            document.getElementById("successMessage");
-
-
-        form.addEventListener("submit", function(event) {
-
-            event.preventDefault();
-
-            successMessage.style.display = "block";
-
-            form.reset();
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        });
-
-    </script>
+    
+        
 
 </body>
 </html>
