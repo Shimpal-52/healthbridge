@@ -182,6 +182,9 @@ def book_appointment(request, doctor_id):
 def login_view(request):
     return render(request, 'core/login.html')
 
+#==================== FORGOT PASSWORD =================
+def forgot_password(request):
+    return render(request, 'core/forgot_password.html')
 
 # ================= REGISTER =================
 

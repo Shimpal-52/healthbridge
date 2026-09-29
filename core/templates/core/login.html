@@ -150,14 +150,14 @@
                 required
             >
 
-            <a href="#" class="forgot">Forgot Password?</a>
+            <a href="{% url 'forgot_password' %}" class="forgot">Forgot Password?</a>
 
             <button type="submit">Login</button>
         </form>
 
         <p class="register">
             Don't have an account?
-            <a href="#">Create Account</a>
+            <a href="{% url 'register' %}">Create Account</a>
         </p>
 
         <a href="/" class="home">← Back to Home</a>
