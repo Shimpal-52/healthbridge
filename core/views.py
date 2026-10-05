@@ -1,5 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db import models
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Patient, Doctor, Hospital, Appointment
 
 
@@ -70,42 +74,46 @@ def hospital_details(request, hospital_id):
 
 # ================= APPOINTMENTS =================
 
+# ================= APPOINTMENTS =================
+
+@login_required(login_url='login')
 def appointments(request):
+
+    # Logged-in user ka Patient record
+    patient, created = Patient.objects.get_or_create(
+        email=request.user.email,
+        defaults={
+            'name': request.user.first_name or request.user.username,
+            'phone': ''
+        }
+    )
+
+    # ================= POST =================
 
     if request.method == 'POST':
 
-        name = request.POST.get('patient_name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        doctor_name = request.POST.get('doctor')
+        doctor_name = request.POST.get('doctor', '').strip()
         appointment_date = request.POST.get('appointment_date')
         appointment_time = request.POST.get('appointment_time')
 
-        # Doctor name se doctor find karo
-        if doctor_name:
-            doctor_name = doctor_name.replace('Dr. ', '').strip()
+        # Doctor select nahi kiya
+        if not doctor_name:
+            messages.error(
+                request,
+                'Please select a doctor.'
+            )
+            return redirect('appointments')
 
+        # "Dr. " remove karo
+        doctor_name = doctor_name.replace('Dr. ', '').strip()
+
+        # Doctor find karo
         doctor = get_object_or_404(
             Doctor,
             name__icontains=doctor_name
         )
 
-        # Patient create ya existing patient find
-        patient, created = Patient.objects.get_or_create(
-            email=email,
-            defaults={
-                'name': name,
-                'phone': phone
-            }
-        )
-
-        # Existing patient ki details update
-        if not created:
-            patient.name = name
-            patient.phone = phone
-            patient.save()
-
-        # Appointment database me save
+        # Appointment save
         Appointment.objects.create(
             patient=patient,
             doctor=doctor,
@@ -113,26 +121,39 @@ def appointments(request):
             appointment_time=appointment_time
         )
 
+        messages.success(
+            request,
+            'Appointment booked successfully!'
+        )
+
         return redirect('appointments')
 
-    # Existing appointments
-    appointments_list = Appointment.objects.all().order_by(
-        '-appointment_date'
+    # ================= GET =================
+
+    appointments_list = Appointment.objects.filter(
+        patient=patient
+    ).order_by(
+        '-appointment_date',
+        '-appointment_time'
     )
 
-    # Doctors aur hospitals form ke liye
     doctors = Doctor.objects.all()
     hospitals_list = Hospital.objects.all()
 
-    return render(request, 'core/appointments.html', {
-        'appointments': appointments_list,
-        'doctors': doctors,
-        'hospitals': hospitals_list
-    })
+    return render(
+        request,
+        'core/appointments.html',
+        {
+            'appointments': appointments_list,
+            'doctors': doctors,
+            'hospitals': hospitals_list
+        }
+    )
 
 
 # ================= BOOK APPOINTMENT =================
 
+@login_required(login_url='login')
 def book_appointment(request, doctor_id):
 
     doctor = get_object_or_404(
@@ -142,25 +163,14 @@ def book_appointment(request, doctor_id):
 
     if request.method == 'POST':
 
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
         appointment_date = request.POST.get('appointment_date')
         appointment_time = request.POST.get('appointment_time')
 
-        # Patient create ya existing patient find
-        patient, created = Patient.objects.get_or_create(
-            email=email,
-            defaults={
-                'name': name,
-                'phone': phone
-            }
+        # Logged-in user ka Patient record
+        patient = get_object_or_404(
+            Patient,
+            email=request.user.email
         )
-
-        if not created:
-            patient.name = name
-            patient.phone = phone
-            patient.save()
 
         # Appointment save
         Appointment.objects.create(
@@ -168,6 +178,11 @@ def book_appointment(request, doctor_id):
             doctor=doctor,
             appointment_date=appointment_date,
             appointment_time=appointment_time
+        )
+
+        messages.success(
+            request,
+            'Appointment booked successfully!'
         )
 
         return redirect('appointments')
@@ -180,13 +195,126 @@ def book_appointment(request, doctor_id):
 # ================= LOGIN =================
 
 def login_view(request):
-    return render(request, 'core/login.html')
 
-#==================== FORGOT PASSWORD =================
+    if request.method == 'POST':
+
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+
+        try:
+            user = User.objects.get(email=email)
+
+        except User.DoesNotExist:
+
+            messages.error(
+                request,
+                'Invalid email or password.'
+            )
+
+            return render(
+                request,
+                'core/login.html'
+            )
+
+        authenticated_user = authenticate(
+            request,
+            username=user.username,
+            password=password
+        )
+
+        if authenticated_user is not None:
+
+            login(
+                request,
+                authenticated_user
+            )
+
+            return redirect('home')
+
+        messages.error(
+            request,
+            'Invalid email or password.'
+        )
+
+    return render(
+        request,
+        'core/login.html'
+    )
+
+
+# ================= FORGOT PASSWORD =================
+
 def forgot_password(request):
-    return render(request, 'core/forgot_password.html')
+    return render(
+        request,
+        'core/forgot_password.html'
+    )
+
 
 # ================= REGISTER =================
 
 def register(request):
-    return render(request, 'core/register.html')
+
+    if request.method == 'POST':
+
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        # Password match check
+        if password != confirm_password:
+
+            messages.error(
+                request,
+                'Passwords do not match.'
+            )
+
+            return redirect('register')
+
+        # Email already registered?
+        if User.objects.filter(email=email).exists():
+
+            messages.error(
+                request,
+                'This email is already registered.'
+            )
+
+            return redirect('register')
+
+        # Django User create
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=name
+        )
+
+        # Patient record create
+        Patient.objects.create(
+            name=name,
+            email=email,
+            phone=phone
+        )
+
+        messages.success(
+            request,
+            'Account created successfully. Please login.'
+        )
+
+        return redirect('login')
+
+    return render(
+        request,
+        'core/register.html'
+    )
+
+
+# ================= LOGOUT =================
+
+def logout_view(request):
+
+    logout(request)
+
+    return redirect('login')

@@ -17,15 +17,54 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('', views.home, name='home'),
+
     path('find_doctor/', views.find_doctor, name='find_doctor'),
+
     path('hospitals/', views.hospitals, name='hospitals'),
-    path('hospital/<int:hospital_id>/', views.hospital_details, name='hospital_detail'),
-    path('appointments/', views.appointments, name='appointments'),
-    path('book_appointment/<int:doctor_id>/', views.book_appointment, name='book_appointment'),
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register, name='register'),
-    path('forgot_password/', views.forgot_password, name='forgot_password'),
+
+    path(
+        'hospital/<int:hospital_id>/',
+        views.hospital_details,
+        name='hospital_detail'
+    ),
+
+    path(
+        'appointments/',
+        views.appointments,
+        name='appointments'
+    ),
+
+    path(
+        'book_appointment/<int:doctor_id>/',
+        views.book_appointment,
+        name='book_appointment'
+    ),
+
+    path(
+        'login/',
+        views.login_view,
+        name='login'
+    ),
+
+    path(
+        'register/',
+        views.register,
+        name='register'
+    ),
+
+    path(
+        'forgot_password/',
+        views.forgot_password,
+        name='forgot_password'
+    ),
+    path(
+        'logout/',
+        views.logout_view,
+        name='logout'   
+    ),
 ]

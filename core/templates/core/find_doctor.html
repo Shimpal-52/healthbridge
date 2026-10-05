@@ -2,46 +2,623 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Find Doctor - HealthBridge</title>
 
-    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+
+    <style>
+
+        /* ================= RESET ================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f9fc;
+            color: #263238;
+        }
+
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e5edf4;
+            padding: 18px 6%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+
+        header h1 {
+            color: #1677c8;
+            font-size: 28px;
+            margin: 0;
+        }
+
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+
+        nav a {
+            color: #526170;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+
+            transition: 0.2s;
+        }
+
+
+        nav a:hover {
+            color: #1677c8;
+        }
+
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #eaf6ff,
+                #f8fcff
+            );
+
+            text-align: center;
+
+            padding: 65px 20px 80px;
+        }
+
+
+        .hero-small {
+            color: #1677c8;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+
+        .hero h2 {
+            color: #17324d;
+            font-size: 44px;
+            margin: 10px 0 15px;
+        }
+
+
+        .hero p {
+            color: #667786;
+            font-size: 17px;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.7;
+        }
+
+
+        /* ================= SEARCH ================= */
+
+        .search-container {
+            max-width: 950px;
+            margin: -30px auto 0;
+            padding: 0 20px;
+
+            position: relative;
+            z-index: 5;
+        }
+
+
+        .search-box {
+            background: white;
+
+            padding: 14px;
+
+            border-radius: 14px;
+
+            display: flex;
+            gap: 12px;
+
+            box-shadow:
+                0 10px 30px rgba(30, 80, 120, 0.12);
+        }
+
+
+        .search-input {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+
+            border: 1px solid #dce6ee;
+            border-radius: 9px;
+
+            background: white;
+        }
+
+
+        .search-input span {
+            padding-left: 15px;
+            font-size: 17px;
+        }
+
+
+        .search-input input {
+            width: 100%;
+
+            border: none;
+            outline: none;
+
+            padding: 14px 15px 14px 10px;
+
+            font-size: 15px;
+
+            color: #263238;
+        }
+
+
+        .search-input input::placeholder {
+            color: #9aa7b3;
+        }
+
+
+        .search-box button {
+            border: none;
+            border-radius: 9px;
+
+            padding: 0 32px;
+
+            background: #1677c8;
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .search-box button:hover {
+            background: #0d63a8;
+            transform: translateY(-1px);
+        }
+
+
+        /* ================= DOCTOR SECTION ================= */
+
+        .doctor-section {
+            max-width: 1200px;
+
+            margin: 65px auto;
+
+            padding: 0 30px;
+        }
+
+
+        .section-title {
+            margin-bottom: 25px;
+        }
+
+
+        .section-title span {
+            color: #1677c8;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            letter-spacing: 2px;
+        }
+
+
+        .section-title h2 {
+            color: #17324d;
+
+            font-size: 30px;
+
+            margin-top: 5px;
+        }
+
+
+        /* ================= DOCTOR GRID ================= */
+
+        .doctor-list {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 24px;
+        }
+
+
+        /* ================= DOCTOR CARD ================= */
+
+        .doctor-card {
+            background: white;
+
+            border: 1px solid #e4edf4;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 20px rgba(30, 70, 100, 0.06);
+
+            transition: 0.25s ease;
+        }
+
+
+        .doctor-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 14px 32px rgba(30, 70, 100, 0.12);
+        }
+
+
+        /* ================= DOCTOR TOP ================= */
+
+        .doctor-top {
+            display: flex;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .doctor-avatar {
+            width: 62px;
+            height: 62px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: #e7f4ff;
+
+            color: #1677c8;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+
+        .doctor-card h3 {
+            color: #1f3345;
+
+            font-size: 18px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .specialization {
+            color: #1677c8;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        /* ================= DOCTOR INFO ================= */
+
+        .doctor-info {
+            border-top: 1px solid #edf2f6;
+            border-bottom: 1px solid #edf2f6;
+
+            padding: 13px 0;
+
+            margin-bottom: 18px;
+        }
+
+
+        .doctor-info p {
+            color: #687987;
+
+            font-size: 13px;
+
+            margin: 9px 0;
+
+            line-height: 1.5;
+
+            word-break: break-word;
+        }
+
+
+        .doctor-info strong {
+            color: #394b5a;
+        }
+
+
+        /* ================= BUTTON ================= */
+
+        .book-button {
+            display: block;
+
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            background: #1677c8;
+
+            color: white;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+
+        .book-button:hover {
+            background: #0d63a8;
+        }
+
+
+        /* ================= NO DOCTORS ================= */
+
+        .no-doctors {
+            grid-column: 1 / -1;
+
+            background: white;
+
+            border: 1px solid #e3ebf2;
+
+            border-radius: 16px;
+
+            text-align: center;
+
+            padding: 55px 20px;
+        }
+
+
+        .no-doctors h3 {
+            color: #263b4d;
+
+            margin-bottom: 6px;
+        }
+
+
+        .no-doctors p {
+            color: #758492;
+
+            font-size: 14px;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #17324d;
+
+            color: white;
+
+            padding: 35px 6%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 25px;
+        }
+
+
+        footer h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+
+        footer p {
+            color: #c5d3df;
+            font-size: 13px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .doctor-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+
+            nav {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+
+            .hero h2 {
+                font-size: 36px;
+            }
+
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .search-box {
+                flex-direction: column;
+            }
+
+
+            .search-box button {
+                min-height: 48px;
+            }
+
+
+            .doctor-list {
+                grid-template-columns: 1fr;
+            }
+
+
+            .doctor-section {
+                padding: 0 18px;
+            }
+
+
+            .hero {
+                padding: 50px 18px 65px;
+            }
+
+
+            .hero h2 {
+                font-size: 31px;
+            }
+
+
+            .hero p {
+                font-size: 15px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
+
+<!-- ================= HEADER ================= -->
+
 <header>
-    <h1>HealthBridge</h1>
+
+    <h1>
+        HealthBridge
+    </h1>
+
 
     <nav>
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'find_doctor' %}">Find Doctor</a>
-        <a href="{% url 'hospitals' %}">Hospitals</a>
-        <a href="{% url 'appointments' %}">Appointments</a>
+
+        <a href="{% url 'home' %}">
+            Home
+        </a>
+
+        <a href="{% url 'find_doctor' %}">
+            Find Doctor
+        </a>
+
+        <a href="{% url 'hospitals' %}">
+            Hospitals
+        </a>
+
+        <a href="{% url 'appointments' %}">
+            Appointments
+        </a>
+
     </nav>
+
 </header>
 
 
-<main>
 
-    <h2>Find a Doctor</h2>
+<!-- ================= HERO ================= -->
 
-    <p>Search doctors by name or specialization.</p>
+<section class="hero">
+
+    <div class="hero-small">
+        HEALTHBRIDGE
+    </div>
 
 
-    <!-- Search Box -->
+    <h2>
+        Find a Doctor
+    </h2>
 
-    <form method="GET" action="{% url 'find_doctor' %}" class="search-box">
 
-        <input
-            type="text"
-            name="q"
-            value="{{ query }}"
-            placeholder="Search doctor or specialization"
-        >
+    <p>
+        Search doctors by name or specialization
+        and find the right healthcare professional for you.
+    </p>
+
+</section>
+
+
+
+<!-- ================= SEARCH ================= -->
+
+<div class="search-container">
+
+    <form
+        method="GET"
+        action="{% url 'find_doctor' %}"
+        class="search-box"
+    >
+
+        <div class="search-input">
+
+            <span>
+                🔍
+            </span>
+
+
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                placeholder="Search doctor or specialization"
+            >
+
+        </div>
+
 
         <button type="submit">
             Search
@@ -49,52 +626,146 @@
 
     </form>
 
+</div>
 
-    <!-- Doctor List -->
 
-    <section class="doctor-list">
+
+<!-- ================= DOCTORS ================= -->
+
+<section class="doctor-section">
+
+
+    <div class="section-title">
+
+        <span>
+            OUR DOCTORS
+        </span>
+
+        <h2>
+            Available Doctors
+        </h2>
+
+    </div>
+
+
+
+    <div class="doctor-list">
+
 
         {% for doctor in doctors %}
 
+
         <div class="doctor-card">
 
-            <h3>Dr. {{ doctor.name }}</h3>
 
-            <p>
-                <strong>Specialization:</strong>
-                {{ doctor.specialization }}
-            </p>
-
-            <p>
-                <strong>Email:</strong>
-                {{ doctor.email }}
-            </p>
-
-            <p>
-                <strong>Phone:</strong>
-                {{ doctor.phone }}
-            </p>
+            <div class="doctor-top">
 
 
-            <!-- Book Appointment -->
+                <div class="doctor-avatar">
 
-            <a href="{% url 'book_appointment' doctor.id %}">
-                <button type="button">
-                    Book Appointment
-                </button>
+                    {{ doctor.name|first|upper }}
+
+                </div>
+
+
+                <div>
+
+                    <h3>
+                        Dr. {{ doctor.name }}
+                    </h3>
+
+
+                    <p class="specialization">
+                        {{ doctor.specialization }}
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="doctor-info">
+
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ doctor.email }}
+                </p>
+
+
+                <p>
+                    <strong>Phone:</strong>
+                    {{ doctor.phone }}
+                </p>
+
+
+            </div>
+
+
+
+            <a
+                href="{% url 'book_appointment' doctor.id %}"
+                class="book-button"
+            >
+                Book Appointment
             </a>
+
 
         </div>
 
+
         {% empty %}
 
-        <p>No doctors found.</p>
+
+        <div class="no-doctors">
+
+            <h3>
+                No doctors found
+            </h3>
+
+            <p>
+                Please try another doctor name
+                or specialization.
+            </p>
+
+        </div>
+
 
         {% endfor %}
 
-    </section>
 
-</main>
+    </div>
+
+</section>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div>
+
+        <h3>
+            HealthBridge
+        </h3>
+
+        <p>
+            Your healthcare, connected in one place.
+        </p>
+
+    </div>
+
+
+    <p>
+        &copy; 2026 HealthBridge. All rights reserved.
+    </p>
+
+</footer>
+
 
 </body>
+
 </html>

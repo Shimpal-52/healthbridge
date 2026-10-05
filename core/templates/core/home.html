@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>HealthBridge</title>
+
     {% load static %}
     <link rel="stylesheet" href="{% static 'core/style.css' %}">
 </head>
@@ -11,23 +13,60 @@
 <body>
 
     <header>
+
         <h1>HealthBridge</h1>
+
         <p>Your Healthcare, Connected in One Place</p>
 
         <nav>
-            <a href="/">Home</a>
-            <a href="{% url 'find_doctor' %}">Find Doctor</a>
-            <a href="{% url 'hospitals' %}">Hospitals</a>
-            <a href="{% url 'appointments' %}">Appointments</a>
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'register' %}">Register</a>
+
+            <a href="{% url 'home' %}">Home</a>
+
+            <a href="{% url 'find_doctor' %}">
+                Find Doctor
+            </a>
+
+            <a href="{% url 'hospitals' %}">
+                Hospitals
+            </a>
+
+            <a href="{% url 'appointments' %}">
+                Appointments
+            </a>
+
+            {% if user.is_authenticated %}
+
+                <span>
+                    Welcome, {{ user.first_name|default:user.username }}
+                </span>
+
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+                <a href="{% url 'register' %}">
+                    Register
+                </a>
+
+            {% endif %}
+
         </nav>
+
     </header>
+
 
     <main>
 
         <section>
+
             <h2>Welcome to HealthBridge</h2>
+
             <p>
                 HealthBridge is a multi-hospital healthcare platform
                 that connects patients, doctors and hospitals in one place.
@@ -40,36 +79,60 @@
             <a href="{% url 'hospitals' %}">
                 <button>Book an Appointment</button>
             </a>
+
         </section>
 
+
         <section>
+
             <h2>Our Services</h2>
 
             <div>
                 <h3>Find Doctors</h3>
-                <p>Search doctors according to their specialization.</p>
+
+                <p>
+                    Search doctors according to their specialization.
+                </p>
             </div>
+
 
             <div>
                 <h3>Find Hospitals</h3>
-                <p>Explore different hospitals and clinics.</p>
+
+                <p>
+                    Explore different hospitals and clinics.
+                </p>
             </div>
+
 
             <div>
                 <h3>Book Appointment</h3>
-                <p>Check availability and book an appointment online.</p>
+
+                <p>
+                    Check availability and book an appointment online.
+                </p>
             </div>
+
 
             <div>
                 <h3>Digital Prescription</h3>
-                <p>View your prescriptions and health records digitally.</p>
+
+                <p>
+                    View your prescriptions and health records digitally.
+                </p>
             </div>
+
         </section>
 
     </main>
 
+
     <footer>
-        <p>&copy; 2026 HealthBridge. All rights reserved.</p>
+
+        <p>
+            &copy; 2026 HealthBridge. All rights reserved.
+        </p>
+
     </footer>
 
 </body>
