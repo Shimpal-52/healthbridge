@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Patient(models.Model):
@@ -8,15 +9,23 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name
-
 class Doctor(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='doctor_profile'
+    )
+
     name = models.CharField(max_length=100)
     specialization = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
 
     def __str__(self):
-            return self.name
+        return self.name
+
 class Hospital(models.Model):
     name = models.CharField(max_length=150)
     address = models.TextField()

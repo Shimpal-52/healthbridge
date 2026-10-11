@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Patient, Doctor, Hospital, Appointment
+from django.views.decorators.http import require_POST
 
 
 # ================= HOME =================
@@ -74,46 +75,31 @@ def hospital_details(request, hospital_id):
 
 # ================= APPOINTMENTS =================
 
-# ================= APPOINTMENTS =================
-
 @login_required(login_url='login')
 def appointments(request):
 
-    # Logged-in user ka Patient record
-    patient, created = Patient.objects.get_or_create(
-        email=request.user.email,
-        defaults={
-            'name': request.user.first_name or request.user.username,
-            'phone': ''
-        }
-    )
-
-    # ================= POST =================
-
     if request.method == 'POST':
 
-        doctor_name = request.POST.get('doctor', '').strip()
+        doctor_name = request.POST.get('doctor')
         appointment_date = request.POST.get('appointment_date')
         appointment_time = request.POST.get('appointment_time')
 
-        # Doctor select nahi kiya
-        if not doctor_name:
-            messages.error(
-                request,
-                'Please select a doctor.'
-            )
-            return redirect('appointments')
+        # Doctor name se Dr. remove karo
+        if doctor_name:
+            doctor_name = doctor_name.replace('Dr. ', '').strip()
 
-        # "Dr. " remove karo
-        doctor_name = doctor_name.replace('Dr. ', '').strip()
-
-        # Doctor find karo
         doctor = get_object_or_404(
             Doctor,
             name__icontains=doctor_name
         )
 
-        # Appointment save
+        # Logged-in user ka Patient record find karo
+        patient = get_object_or_404(
+            Patient,
+            email=request.user.email
+        )
+
+        # Appointment database me save
         Appointment.objects.create(
             patient=patient,
             doctor=doctor,
@@ -128,7 +114,11 @@ def appointments(request):
 
         return redirect('appointments')
 
-    # ================= GET =================
+    # Sirf logged-in patient ki appointments
+    patient = get_object_or_404(
+        Patient,
+        email=request.user.email
+    )
 
     appointments_list = Appointment.objects.filter(
         patient=patient
@@ -140,15 +130,11 @@ def appointments(request):
     doctors = Doctor.objects.all()
     hospitals_list = Hospital.objects.all()
 
-    return render(
-        request,
-        'core/appointments.html',
-        {
-            'appointments': appointments_list,
-            'doctors': doctors,
-            'hospitals': hospitals_list
-        }
-    )
+    return render(request, 'core/appointments.html', {
+        'appointments': appointments_list,
+        'doctors': doctors,
+        'hospitals': hospitals_list
+    })
 
 
 # ================= BOOK APPOINTMENT =================
@@ -318,3 +304,120 @@ def logout_view(request):
     logout(request)
 
     return redirect('login')
+# ================= PATIENT DASHBOARD =================
+
+@login_required(login_url='login')
+def patient_dashboard(request):
+
+    patient, created = Patient.objects.get_or_create(
+        email=request.user.email,
+        defaults={
+            'name': (
+                request.user.get_full_name()
+                or request.user.username
+            ),
+            'phone': ''
+        }
+    )
+
+    appointments_list = (
+        Appointment.objects
+        .filter(patient=patient)
+        .select_related('doctor')
+        .order_by('-appointment_date', '-appointment_time')
+    )
+
+    context = {
+        'patient': patient,
+        'appointments': appointments_list,
+        'total_appointments': appointments_list.count(),
+        'pending_appointments': appointments_list.filter(
+            status__iexact='Pending'
+        ).count(),
+        'confirmed_appointments': appointments_list.filter(
+            status__iexact='Confirmed'
+        ).count(),
+    }
+
+    return render(
+        request,
+        'core/patient_dashboard.html',
+        context
+    )
+# ================= DOCTOR DASHBOARD =================
+
+@login_required(login_url='login')
+def doctor_dashboard(request):
+
+    # Logged-in account se linked doctor find karo
+    doctor = get_object_or_404(
+        Doctor,
+        user=request.user
+    )
+
+    # Sirf is doctor ki appointments
+    appointments_list = (
+        Appointment.objects
+        .filter(doctor=doctor)
+        .select_related('patient')
+        .order_by('-appointment_date', '-appointment_time')
+    )
+
+    context = {
+        'doctor': doctor,
+        'appointments': appointments_list,
+        'total_appointments': appointments_list.count(),
+        'pending_appointments': appointments_list.filter(
+            status__iexact='Pending'
+        ).count(),
+        'confirmed_appointments': appointments_list.filter(
+            status__iexact='Confirmed'
+        ).count(),
+    }
+
+    return render(
+        request,
+        'core/doctor_dashboard.html',
+        context
+    )
+
+
+# ================= UPDATE APPOINTMENT STATUS =================
+
+@login_required(login_url='login')
+@require_POST
+def update_appointment_status(request, appointment_id):
+
+    doctor = get_object_or_404(
+        Doctor,
+        user=request.user
+    )
+
+    appointment = get_object_or_404(
+        Appointment,
+        id=appointment_id,
+        doctor=doctor
+    )
+
+    new_status = request.POST.get('status', '').strip().title()
+
+    if new_status not in ['Confirmed', 'Cancelled']:
+        messages.error(request, 'Invalid appointment status.')
+        return redirect('doctor_dashboard')
+
+    if appointment.status.lower() != 'pending':
+        messages.error(
+            request,
+            'Only pending appointments can be updated.'
+        )
+        return redirect('doctor_dashboard')
+
+    appointment.status = new_status
+    appointment.save(update_fields=['status'])
+
+    messages.success(
+        request,
+        f'Appointment {new_status.lower()} successfully.'
+    )
+
+    return redirect('doctor_dashboard')
