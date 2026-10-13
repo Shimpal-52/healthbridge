@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Dashboard | HealthBridge</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f7fb;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            color: #176b87;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: white;
+            width: 260px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px #00000015;
+        }
+
+        .card h2 {
+            color: #176b87;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #176b87;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Welcome to HealthBridge</h1>
+    <p>Please select your dashboard.</p>
+
+    <div class="container">
+
+        <div class="card">
+            <h2>Patient Dashboard</h2>
+            <p>View appointments and track their status.</p>
+
+            <a href="{% url 'patient_dashboard' %}" class="btn">
+                Open Patient Dashboard
+            </a>
+        </div>
+
+        <div class="card">
+            <h2>Doctor Dashboard</h2>
+            <p>View and manage appointment requests.</p>
+
+            <a href="{% url 'doctor_dashboard' %}" class="btn">
+                Open Doctor Dashboard
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

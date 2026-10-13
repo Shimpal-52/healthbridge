@@ -539,7 +539,7 @@
                                             {% if appointment.status|lower == "pending" %}
 
                                                 <form method="post"
-                                                      action="{% url 'confirm_appointment' appointment.id %}">
+                                                      action="{% url 'update_appointment_status' appointment.id %}">
 
                                                     {% csrf_token %}
 
@@ -552,7 +552,7 @@
 
 
                                                 <form method="post"
-                                                      action="{% url 'cancel_appointment' appointment.id %}">
+                                                      action="{% url 'update_appointment_status' appointment.id %}">
 
                                                     {% csrf_token %}
 

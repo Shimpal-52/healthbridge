@@ -1,3 +1,4 @@
+from django.http import request
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db import models
 from django.contrib.auth import authenticate, login, logout
@@ -421,3 +422,7 @@ def update_appointment_status(request, appointment_id):
     )
 
     return redirect('doctor_dashboard')
+    # ================= DASHBOARD SELECTION =================
+@login_required(login_url='login')
+def dashboard_selection(request):
+     return render(request, 'core/dashboard_selection.html')

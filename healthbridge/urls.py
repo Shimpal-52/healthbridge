@@ -102,6 +102,12 @@ urlpatterns = [
          views.update_appointment_status,
          name='update_appointment_status'
     ),
-    
+    # ================= DASHBOARD SELECTION =================
+
+    path(
+       'dashboard/',
+        views.dashboard_selection,
+        name='dashboard_selection'
+   ),
 
 ]
